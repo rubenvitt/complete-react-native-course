@@ -3,35 +3,41 @@ import {Text, StyleSheet, View, Button} from "react-native";
 
 const HomeScreen = ({navigation}) => {
 
-    return <View>
+    return (
+      <View>
         <Text style={styles.text}>Hi there!</Text>
         <Button
-            title={'Open Components Screen'}
-            onPress={() => {
-                navigation.navigate('Components')
-            }}
+          title={"Open Components Screen"}
+          onPress={() => {
+            navigation.navigate("Components");
+          }}
         />
         <Button
-            title={'Open List Screen'}
-            onPress={() => navigation.navigate('List')}
+          title={"Open List Screen"}
+          onPress={() => navigation.navigate("List")}
         />
         <Button
-            title={'Open Image Screen'}
-            onPress={() => navigation.navigate('Image')}
+          title={"Open Image Screen"}
+          onPress={() => navigation.navigate("Image")}
         />
         <Button
-            title={'Open Counter Screen'}
-            onPress={() => navigation.navigate('Counter')}
+          title={"Open Counter Screen"}
+          onPress={() => navigation.navigate("Counter")}
         />
         <Button
-            title={'Open Colors Screen'}
-            onPress={() => navigation.navigate('Colors')}
+          title={"Open Colors Screen"}
+          onPress={() => navigation.navigate("Colors")}
         />
         <Button
-            title={'Open Square Screen'}
-            onPress={() => navigation.navigate('Square')}
+          title={"Open Square Screen"}
+          onPress={() => navigation.navigate("Square")}
         />
-    </View>;
+        <Button
+          title={"Open Text Screen"}
+          onPress={() => navigation.navigate("Text")}
+        />
+      </View>
+    );
 };
 
 const styles = StyleSheet.create({
