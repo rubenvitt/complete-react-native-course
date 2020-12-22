@@ -1,24 +1,24 @@
 import React, { useContext } from 'react';
 import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
-import BlogContext from '../context/blogpost.provider';
+import { BlogPost, Context, IContext } from '../context/blogpost.context';
 
 export const IndexScreen = () => {
-  const { data: blogPosts, action } = useContext(BlogContext);
+  const context = useContext(Context);
 
   return (
     <View>
-      <Text>Index screen: {blogPosts.length} elements</Text>
+      <Text>Index screen: {context.state.length} elements</Text>
       <Button
         title={'Add blogpost'}
         onPress={() => {
-          action({
-            payload: { title: 'Testpost #' + blogPosts.length, id: String(blogPosts.length) },
-            type: 'add',
+          (context as IContext).addBlogPost({
+            title: 'Test-BlogPost #' + context.state.length,
+            id: String(context.state.length),
           });
         }}
       />
       <FlatList
-        data={blogPosts}
+        data={context.state}
         renderItem={({ item }) => <Text>{item.title}</Text>}
         keyExtractor={(item) => item.id}
       />
