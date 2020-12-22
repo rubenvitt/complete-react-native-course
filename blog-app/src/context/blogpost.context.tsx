@@ -1,14 +1,16 @@
 import createDataContext from './create-data-context';
 
 export interface BlogPost {
-  id: string;
+  id?: string;
   title: string;
+  content: string;
 }
 
 export interface IContext {
   state: BlogPost[];
   addBlogPost: (payload: BlogPost) => void;
   deleteBlogPost: (payload: BlogPost) => void;
+  updateBlogPost: (payload: BlogPost) => void;
 }
 
 interface ActionType {
@@ -19,6 +21,9 @@ interface ActionType {
 const reducer = (state: BlogPost[], action: ActionType): BlogPost[] => {
   switch (action.type) {
     case 'add':
+      if (action.payload.id === undefined) {
+        action.payload.id = String(Math.floor(Math.random() * 999999));
+      }
       return [...state, action.payload];
     case 'update':
       return state.map((value) => (value.id === action.payload.id ? action.payload : value));

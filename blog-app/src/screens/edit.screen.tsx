@@ -6,25 +6,31 @@ import { RootStackParamList } from '../../App';
 import { Context, IContext } from '../context/blogpost.context';
 import { BlogPostForm } from '../components/blogpost-form.component';
 
-type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Create'>;
-type DetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Create'>;
+type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
+type DetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
 
 type Props = {
   route: DetailScreenRouteProp;
   navigation: DetailScreenNavigationProp;
 };
 
-export const CreateScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { addBlogPost } = useContext(Context) as IContext;
+export const EditScreen: React.FC<Props> = ({ navigation, route }) => {
+  const { state, updateBlogPost } = useContext(Context) as IContext;
+  const blogPost = state.find((value) => value.id === route.params.blogPostId);
+
+  if (!blogPost) {
+    navigation.navigate('Index');
+    return null;
+  }
 
   return (
     <View>
       <BlogPostForm
-        onSubmit={(newBlogPost) => {
-          addBlogPost(newBlogPost);
-          navigation.navigate('Index');
+        onSubmit={(updatedBlogPost) => {
+          updateBlogPost(updatedBlogPost);
+          navigation.goBack();
         }}
-        initialBlogPost={{ title: '', content: '' }}
+        initialBlogPost={blogPost}
       />
     </View>
   );
@@ -32,4 +38,4 @@ export const CreateScreen: React.FC<Props> = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({});
 
-export default CreateScreen;
+export default EditScreen;

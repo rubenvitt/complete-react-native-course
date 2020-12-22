@@ -3,7 +3,9 @@ import { ActionType } from 'expo/build/Notifications/Notifications.types';
 
 export default <ActionType, ContentType>(
   reducer: React.Reducer<ContentType[], ActionType>,
-  actions: { [key: string]: (dispatch: (action: ActionType) => void) => (payload: ContentType) => void },
+  actions: {
+    [key: string]: (dispatch: (action: ActionType) => void) => (payload: ContentType) => void;
+  },
   initialState: ContentType[],
 ) => {
   const Context = React.createContext<

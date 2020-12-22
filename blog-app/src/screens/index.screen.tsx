@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const IndexScreen: React.FC<Props> = ({ navigation }) => {
-  const { deleteBlogPost, addBlogPost, state } = useContext(Context) as IContext;
+  const { deleteBlogPost, state } = useContext(Context) as IContext;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -33,15 +33,6 @@ export const IndexScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View>
-      <Button
-        title={'Add blogpost'}
-        onPress={() => {
-          addBlogPost({
-            title: 'Test-BlogPost #' + Math.floor(Math.random() * 999999),
-            id: String(Math.floor(Math.random() * 999999)),
-          });
-        }}
-      />
       <FlatList
         data={state}
         renderItem={({ item }) => {
@@ -66,7 +57,7 @@ export const IndexScreen: React.FC<Props> = ({ navigation }) => {
             </TouchableOpacity>
           );
         }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id ?? 'undefined'}
       />
     </View>
   );
