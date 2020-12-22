@@ -8,6 +8,7 @@ export interface BlogPost {
 export interface IContext {
   state: BlogPost[];
   addBlogPost: (payload: BlogPost) => void;
+  deleteBlogPost: (payload: BlogPost) => void;
 }
 
 interface ActionType {
@@ -18,20 +19,11 @@ interface ActionType {
 const reducer = (state: BlogPost[], action: ActionType): BlogPost[] => {
   switch (action.type) {
     case 'add':
-      return [
-        ...state,
-        {
-          id: String(state.length),
-          title: 'Blogpost #' + state.length,
-        },
-      ];
-    //return [...state, action.payload];
+      return [...state, action.payload];
     case 'update':
-      return state;
-    //return state.map((value) => (value.id === action.payload.id ? action.payload : value));
+      return state.map((value) => (value.id === action.payload.id ? action.payload : value));
     case 'delete':
-      return state;
-    //return state.filter((blogPost) => blogPost.id !== action.payload.id);
+      return state.filter((blogPost) => blogPost.id !== action.payload.id);
   }
   return [];
 };
@@ -42,4 +34,16 @@ const addBlogPost = (dispatch: (action: ActionType) => void) => {
   };
 };
 
-export const { Context, Provider } = createDataContext(reducer, { addBlogPost }, []);
+const deleteBlogPost = (dispatch: (action: ActionType) => void) => {
+  return (payload: BlogPost) => {
+    dispatch({ type: 'delete', payload: payload });
+  };
+};
+
+const updateBlogPost = (dispatch: (action: ActionType) => void) => {
+  return (payload: BlogPost) => {
+    dispatch({ type: 'update', payload: payload });
+  };
+};
+
+export const { Context, Provider } = createDataContext(reducer, { addBlogPost, deleteBlogPost, updateBlogPost }, []);
