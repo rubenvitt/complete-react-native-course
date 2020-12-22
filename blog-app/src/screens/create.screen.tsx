@@ -5,6 +5,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
 import { Context, IContext } from '../context/blogpost.context';
 import { BlogPostForm } from '../components/blogpost-form.component';
+import { useMutation, useQueryClient } from 'react-query';
+import { createBlogPost, removeBlogPost } from '../api/blogpost.api';
 
 type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Create'>;
 type DetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Create'>;
@@ -15,13 +17,20 @@ type Props = {
 };
 
 export const CreateScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { addBlogPost } = useContext(Context) as IContext;
+  const { addBlogPost, state } = useContext(Context) as IContext;
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation('blogposts', createBlogPost, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogPosts');
+    },
+  });
 
   return (
     <View>
       <BlogPostForm
         onSubmit={(newBlogPost) => {
-          addBlogPost(newBlogPost);
+          mutate(newBlogPost);
           navigation.navigate('Index');
         }}
         initialBlogPost={{ title: '', content: '' }}

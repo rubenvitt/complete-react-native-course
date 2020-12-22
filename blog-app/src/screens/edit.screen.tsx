@@ -5,6 +5,8 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
 import { Context, IContext } from '../context/blogpost.context';
 import { BlogPostForm } from '../components/blogpost-form.component';
+import { useMutation, useQueryClient } from 'react-query';
+import { removeBlogPost, updateBlogPost } from '../api/blogpost.api';
 
 type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Edit'>;
 type DetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Edit'>;
@@ -15,8 +17,14 @@ type Props = {
 };
 
 export const EditScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { state, updateBlogPost } = useContext(Context) as IContext;
+  const { state } = useContext(Context) as IContext;
   const blogPost = state.find((value) => value.id === route.params.blogPostId);
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation('blogPosts', updateBlogPost, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogPosts');
+    },
+  });
 
   if (!blogPost) {
     navigation.navigate('Index');
@@ -27,7 +35,7 @@ export const EditScreen: React.FC<Props> = ({ navigation, route }) => {
     <View>
       <BlogPostForm
         onSubmit={(updatedBlogPost) => {
-          updateBlogPost(updatedBlogPost);
+          mutate(updatedBlogPost);
           navigation.goBack();
         }}
         initialBlogPost={blogPost}

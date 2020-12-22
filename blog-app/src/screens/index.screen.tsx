@@ -1,10 +1,12 @@
-import React, { useContext, useLayoutEffect } from 'react';
+import React, { useContext, useEffect, useLayoutEffect } from 'react';
 import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BlogPost, Context, IContext } from '../context/blogpost.context';
 import { FontAwesome } from '@expo/vector-icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../App';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { fetchAllBlogPosts, removeBlogPost } from '../api/blogpost.api';
 
 type IndexScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Index'>;
 
@@ -13,7 +15,29 @@ type Props = {
 };
 
 export const IndexScreen: React.FC<Props> = ({ navigation }) => {
-  const { deleteBlogPost, state } = useContext(Context) as IContext;
+  const { state, addBlogPost, emptyList } = useContext(Context) as IContext;
+
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, refetch } = useQuery('blogPosts', fetchAllBlogPosts);
+  const { mutate } = useMutation('blogPosts', removeBlogPost, {
+    onSuccess: () => {
+      emptyList();
+      queryClient.invalidateQueries('blogPosts');
+    },
+  });
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      refetch();
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      data?.forEach(addBlogPost);
+    }
+  }, [data]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -32,34 +56,32 @@ export const IndexScreen: React.FC<Props> = ({ navigation }) => {
   });
 
   return (
-    <View>
-      <FlatList
-        data={state}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Detail', {
-                  blogPostId: item.id,
-                });
-              }}
-            >
-              <View style={styles.blogPostContainer}>
-                <Text style={styles.blogPostText}>{item.title}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    deleteBlogPost(item);
-                  }}
-                >
-                  <FontAwesome style={styles.blogPostIcon} name="trash-o" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-        keyExtractor={(item) => item.id ?? 'undefined'}
-      />
-    </View>
+    <FlatList
+      data={state}
+      renderItem={({ item }) => {
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Detail', {
+                blogPostId: item.id,
+              });
+            }}
+          >
+            <View style={styles.blogPostContainer}>
+              <Text style={styles.blogPostText}>{item.title}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  mutate(item);
+                }}
+              >
+                <FontAwesome style={styles.blogPostIcon} name="trash-o" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        );
+      }}
+      keyExtractor={(item) => item.id ?? 'undefined'}
+    />
   );
 };
 
