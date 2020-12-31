@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { View, StyleSheet } from 'react-native';
 import { LoginStackParamList } from '../../App';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
+import { Button } from 'react-native-elements';
+import { useAuthenticationMethods } from '../hooks/login.hook';
+import AuthenticationForm from '../components/authentication-form.component';
 
 type DetailScreenNavigationProp = StackNavigationProp<LoginStackParamList, 'Signin'>;
 
@@ -10,11 +12,12 @@ type Props = {
   navigation: DetailScreenNavigationProp;
 };
 
-const SignInScreen: React.FC<Props> = ({ navigation }) => {
-  return (
-    <View>
-      <Text>SignIn Screen</Text>
+const SignUpScreen: React.FC<Props> = ({ navigation }) => {
+  const { login } = useAuthenticationMethods();
 
+  return (
+    <View style={styles.container}>
+      <AuthenticationForm authenticationMethod={login} title={'Sign In (Tracker)'} btnTitle={'Sign in'} />
       <Button
         type={'clear'}
         title={'Not a member? Sign up!'}
@@ -26,6 +29,12 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    marginBottom: 200,
+  },
+});
 
-export default SignInScreen;
+export default SignUpScreen;
