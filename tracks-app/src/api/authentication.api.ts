@@ -1,4 +1,4 @@
-import axios from './tracker.api';
+import axios from './tracker.axios-config';
 
 export const postSignup = async (data: { user: string; password: string }) => {
   return await axios

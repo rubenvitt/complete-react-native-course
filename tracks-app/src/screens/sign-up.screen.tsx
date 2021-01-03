@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { LoginStackParamList } from '../../App';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Button, Input, Text } from 'react-native-elements';
-import { useAuthenticationMethods, useAuthenticationStore } from '../hooks/login.hook';
+import { useAuthenticationMethods, useAuthenticationStore } from '../hooks/login.hooks';
 import AuthenticationForm from '../components/authentication-form.component';
 
 type DetailScreenNavigationProp = StackNavigationProp<LoginStackParamList, 'Signup'>;

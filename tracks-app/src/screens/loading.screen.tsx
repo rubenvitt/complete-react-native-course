@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { LoginStackParamList } from '../../App';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useAuthenticationStore } from '../hooks/login.hook';
+import { useAuthenticationStore } from '../hooks/login.hooks';
 
 type DetailScreenNavigationProp = StackNavigationProp<LoginStackParamList, 'Signin'>;
 

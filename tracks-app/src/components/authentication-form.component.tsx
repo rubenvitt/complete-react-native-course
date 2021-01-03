@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Spacer from './spacer.component';
 import { Button, Input, Text } from 'react-native-elements';
 import { StyleSheet, View } from 'react-native';
-import { AuthenticationMethod, useAuthenticationStore } from '../hooks/login.hook';
+import { AuthenticationMethod, useAuthenticationStore } from '../hooks/login.hooks';
 import { useIsFocused } from '@react-navigation/native';
 
 type Props = {

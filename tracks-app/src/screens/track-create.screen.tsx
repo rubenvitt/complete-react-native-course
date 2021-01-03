@@ -1,46 +1,31 @@
 //import '../mocks/location.mock';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import MapComponent from '../components/map.component';
 import SafeAreaView from 'react-native-safe-area-view';
 import { Text } from 'react-native-elements';
-import { LocationAccuracy, requestPermissionsAsync, watchPositionAsync } from 'expo-location';
-import { useLocationStore } from '../hooks/location.hook';
+import { useLocationStore } from '../hooks/location.store';
+import useLocation from '../hooks/location.hook';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { MainStackParamList } from '../../App';
+import TrackForm from '../components/track-form.component';
 
-const TrackCreateScreen = () => {
-  const [error, setError] = useState<Error | null>(null);
-  const { addLocation } = useLocationStore();
+type TrackCreateScreenNavigationProp = BottomTabNavigationProp<MainStackParamList, 'TrackCreate'>;
 
-  const startWatching = async () => {
-    try {
-      const { granted } = await requestPermissionsAsync();
-      if (!granted) {
-        throw new Error('You need to grant location permission to create a new track.');
-      }
-      setError(null);
+type Props = {
+  navigation: TrackCreateScreenNavigationProp;
+};
 
-      await watchPositionAsync(
-        {
-          accuracy: LocationAccuracy.BestForNavigation,
-          timeInterval: 1000,
-          distanceInterval: 10,
-        },
-        addLocation,
-      );
-    } catch (e) {
-      setError(e);
-    }
-  };
-
-  useEffect(() => {
-    startWatching();
-  }, []);
+const TrackCreateScreen: React.FC<Props> = ({ navigation }) => {
+  const { addLocation, recording } = useLocationStore();
+  const [error] = useLocation(navigation.isFocused() || recording, addLocation);
 
   return (
     <SafeAreaView forceInset={{ top: 'always' }}>
       <Text h3>Create a track</Text>
       <MapComponent />
       {error ? <Text>Location services permission must be granted to use track-creation</Text> : null}
+      <TrackForm />
     </SafeAreaView>
   );
 };

@@ -8,7 +8,7 @@ import AccountScreen from './src/screens/account.screen';
 import TrackCreateScreen from './src/screens/track-create.screen';
 import TrackListScreen from './src/screens/track-list.screen';
 import TrackDetailScreen from './src/screens/track-detail.screen';
-import { useAuthenticationStore } from './src/hooks/login.hook';
+import { useAuthenticationStore } from './src/hooks/login.hooks';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import LoadingScreen from './src/screens/loading.screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -33,15 +33,13 @@ export type MainStackParamList = {
 
 export type TrackStackParamList = {
   TrackList: undefined;
-  TrackDetail: undefined;
+  TrackDetail: { id: string };
 };
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const { token } = useAuthenticationStore();
-
-  console.log('token', token);
 
   return (
     <QueryClientProvider client={queryClient}>

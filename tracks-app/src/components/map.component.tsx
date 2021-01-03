@@ -1,10 +1,10 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import MapView, { Circle, Polyline } from 'react-native-maps';
-import { useLocationStore } from '../hooks/location.hook';
+import { useLocationStore } from '../hooks/location.store';
 
 const MapComponent = () => {
-  const { currentLocation } = useLocationStore();
+  const { currentLocation, locations } = useLocationStore();
 
   if (!currentLocation) {
     return <ActivityIndicator size={'large'} style={{ marginTop: 200 }} />;
@@ -20,7 +20,9 @@ const MapComponent = () => {
       style={styles.map}
       showsUserLocation
       followsUserLocation
-    />
+    >
+      <Polyline coordinates={locations.map((location) => location.coords)} />
+    </MapView>
   );
 };
 

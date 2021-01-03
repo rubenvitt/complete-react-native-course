@@ -1,34 +1,43 @@
-import create from 'zustand';
-import { LocationObject } from 'expo-location';
+import { useEffect, useState } from 'react';
+import { LocationAccuracy, LocationObject, requestPermissionsAsync, watchPositionAsync } from 'expo-location';
 
-type LocationStoreType = {
-  recording: boolean;
-  currentLocation?: LocationObject;
-  locations: LocationObject[];
-  startRecording: () => void;
-  stopRecording: () => void;
-  addLocation: (location: LocationObject) => void;
-};
+export default (shouldTrack: boolean, onLocationUpdate: (location: LocationObject) => void) => {
+  const [error, setError] = useState<Error | null>(null);
 
-export const useLocationStore = create<LocationStoreType>((set, get) => ({
-  locations: [],
-  recording: false,
-  startRecording: () => {
-    //
-  },
-  stopRecording: () => {
-    //
-  },
-  addLocation: (location) => {
-    set({ currentLocation: location });
-  },
-}));
+  useEffect(() => {
+    let subscriber: undefined | { remove: () => void };
 
-const useLocationMethods = () => {
-  const startRecording = () => {
-    //
-  };
-  const stopRecording = () => {
-    //
-  };
+    const startWatching = async () => {
+      try {
+        const { granted } = await requestPermissionsAsync();
+        if (!granted) {
+          throw new Error('You need to grant location permission to create a new track.');
+        }
+        setError(null);
+
+        subscriber = await watchPositionAsync(
+          {
+            accuracy: LocationAccuracy.BestForNavigation,
+            timeInterval: 1000,
+            distanceInterval: 10,
+          },
+          onLocationUpdate,
+        );
+      } catch (e) {
+        setError(e);
+      }
+    };
+
+    if (shouldTrack) startWatching();
+    else {
+      subscriber?.remove();
+      subscriber = undefined;
+    }
+
+    return () => {
+      subscriber?.remove();
+    };
+  }, [shouldTrack, onLocationUpdate]);
+
+  return [error];
 };

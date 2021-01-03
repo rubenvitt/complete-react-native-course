@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { LoginStackParamList, TrackStackParamList } from '../../App';
+import { TrackStackParamList } from '../../App';
+import { useQuery } from 'react-query';
+import { fetchTracks } from '../api/tracks.api';
+import { ListItem } from 'react-native-elements';
 
 type TrackListScreenNavigationProp = StackNavigationProp<TrackStackParamList, 'TrackList'>;
 
@@ -10,11 +13,28 @@ type Props = {
 };
 
 const TrackListScreen: React.FC<Props> = ({ navigation }) => {
+  const { data, isFetching } = useQuery('tracks', fetchTracks);
+
   return (
-    <View>
-      <Text>TrackList Screen</Text>
-      <Button title={'To detail view'} onPress={() => navigation.navigate('TrackDetail')} />
-    </View>
+    <>
+      {isFetching && <Text>Is fetching...</Text>}
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity onPress={() => navigation.navigate('TrackDetail', { id: item._id })}>
+              <ListItem bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title>{item.name}</ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+            </TouchableOpacity>
+          );
+        }}
+      />
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useAuthenticationMethods, useAuthenticationStore } from '../hooks/login.hook';
+import { useAuthenticationMethods, useAuthenticationStore } from '../hooks/login.hooks';
 import { Button } from 'react-native-elements';
 import Spacer from '../components/spacer.component';
 import { LoginStackParamList } from '../../App';
